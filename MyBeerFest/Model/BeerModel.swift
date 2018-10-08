@@ -12,6 +12,6 @@ class BeerModel {
   
   var imageBeer: String?
   
-  var beerArray = ["1", "2", "3", "4", "5", "6"]
+  var beerArray = ["1a", "2a", "3a", "4a", "5a", "6a"]
   
 }

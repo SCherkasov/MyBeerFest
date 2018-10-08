@@ -21,9 +21,26 @@ class ViewController: UIViewController {
     collectionView.register(nibName,
                             forCellWithReuseIdentifier: "BeerCollectionViewCell")
     
-   setupLayoutToCollectionView()
+    setupLayoutToCollectionView()
+    addLogoToNavigationBarTitle()
   }
-
+  
+  func addLogoToNavigationBarTitle() {
+    let naviController = navigationController
+    let logoImage = #imageLiteral(resourceName: "BeerLogo")
+    let imageView = UIImageView(image: logoImage)
+    let logoWigth = naviController?.navigationBar.frame.size.width
+    let logoHeight = naviController?.navigationBar.frame.size.height
+    let logoX = logoWigth! / 2 - logoImage.size.width / 2
+    let logoY = logoHeight! / 2 - logoImage.size.height / 2
+    
+    imageView.frame = CGRect(x: logoX, y: logoY, width: logoWigth!,
+                             height: logoHeight!)
+    imageView.contentMode = .scaleAspectFit
+    navigationItem.titleView = imageView
+    naviController?.navigationBar.barTintColor = UIColor.black
+  }
+  
   func setupLayoutToCollectionView() {
     let itemSize = UIScreen.main.bounds.width / 3
     
@@ -54,9 +71,5 @@ extension ViewController: UICollectionViewDataSource {
     
     return cell
   }
-  
-}
-
-extension ViewController: UICollectionViewDelegate {
   
 }
