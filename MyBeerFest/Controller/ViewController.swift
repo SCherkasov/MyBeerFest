@@ -25,6 +25,7 @@ class ViewController: UIViewController {
     addLogoToNavigationBarTitle()
   }
   
+  // Add logo to ToNavigationBarTitle
   func addLogoToNavigationBarTitle() {
     let naviController = navigationController
     let logoImage = #imageLiteral(resourceName: "BeerLogo")
@@ -41,6 +42,7 @@ class ViewController: UIViewController {
     naviController?.navigationBar.barTintColor = UIColor.black
   }
   
+  // make layout to Collection View
   func setupLayoutToCollectionView() {
     let itemSize = UIScreen.main.bounds.width / 3
     
@@ -54,8 +56,34 @@ class ViewController: UIViewController {
     collectionView.collectionViewLayout = layout
   }
   
+  // Motion effect to show alert
+  override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
+    if motion == .motionShake {
+      alertAfterShakeMotion()
+      print("motion was greate")
+    }
+  }
+  
+  // Added alert after shake motion
+  func alertAfterShakeMotion() {
+    let alertController = UIAlertController(title: "Alert",
+                    message: "Please make you choose:", preferredStyle: .alert)
+    let actionCamera = UIAlertAction(title: "Camera", style: .default) { (action: UIAlertAction) in
+      self.takePhoto()
+      print("I was open yout camera")
+    }
+    let actionLibrary = UIAlertAction(title: "Library", style: .default) { (action: UIAlertAction) in
+      self.takePhotoLibrary()
+      print("I was open your Library")
+    }
+    
+    alertController.addAction(actionCamera)
+    alertController.addAction(actionLibrary)
+    self.present(alertController, animated: true, completion: nil)
+  }
 }
 
+// MARK: UICollectionViewDataSource
 extension ViewController: UICollectionViewDataSource {
   
   func collectionView(_ collectionView: UICollectionView,
@@ -71,5 +99,54 @@ extension ViewController: UICollectionViewDataSource {
     
     return cell
   }
+}
+
+// MARK: UINavigationControllerDelegate, UIImagePickerControllerDelegate
+extension ViewController: UINavigationControllerDelegate,
+UIImagePickerControllerDelegate {
+  
+  func takePhoto() {
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
+      let imagePicker = UIImagePickerController()
+      imagePicker.delegate = self
+      imagePicker.sourceType = UIImagePickerControllerSourceType.camera
+      imagePicker.allowsEditing = false
+      present(imagePicker, animated: true, completion: nil)
+    } else {
+      print("ERROR")
+    }
+  }
+  
+  func takePhotoLibrary() {
+    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
+      let imagePicker = UIImagePickerController()
+      imagePicker.delegate = self
+      imagePicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
+      imagePicker.allowsEditing = false
+      present(imagePicker, animated: true, completion: nil)
+    } else {
+      print("ERROR")
+    }
+  }
+  
+  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+      
+    }
+    dismiss(animated: true, completion: nil)
+  }
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
