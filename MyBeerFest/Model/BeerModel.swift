@@ -11,8 +11,6 @@ import UIKit
 
 class BeerModel {
   
-  var imageBeer: String?
-  
-  var beerArray = [UIImage()]
+  var beerArray = [UIImage]()
   
 }
