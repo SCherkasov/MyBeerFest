@@ -95,7 +95,7 @@ extension ViewController: UICollectionViewDataSource {
                       cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BeerCollectionViewCell", for: indexPath) as! BeerCollectionViewCell
     
-    cell.beerImage.image = UIImage(named: beerModel.beerArray[indexPath.row])
+    cell.beerImage.image = beerModel.beerArray[indexPath.row]
     
     return cell
   }
@@ -110,7 +110,7 @@ UIImagePickerControllerDelegate {
       let imagePicker = UIImagePickerController()
       imagePicker.delegate = self
       imagePicker.sourceType = UIImagePickerControllerSourceType.camera
-      imagePicker.allowsEditing = false
+      imagePicker.allowsEditing = true
       present(imagePicker, animated: true, completion: nil)
     } else {
       print("ERROR")
@@ -131,7 +131,8 @@ UIImagePickerControllerDelegate {
   
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      
+      beerModel.beerArray.append(pickedImage)
+      collectionView.reloadData()
     }
     dismiss(animated: true, completion: nil)
   }
