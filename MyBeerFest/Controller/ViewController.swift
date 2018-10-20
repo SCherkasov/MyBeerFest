@@ -13,6 +13,7 @@ class ViewController: UIViewController {
   @IBOutlet var collectionView: UICollectionView!
   
   var beerModel = BeerModel()
+  var imagesUrlArray = [URL]()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -81,6 +82,27 @@ class ViewController: UIViewController {
     alertController.addAction(actionLibrary)
     self.present(alertController, animated: true, completion: nil)
   }
+  
+  func saveBeerImages() {
+    for images in beerModel.beerArray {
+      let document = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+      print(document.absoluteString)
+      let imageUrl = document.appendingPathComponent(images, isDirectory: true)
+      print(imageUrl.path)
+      
+      if !FileManager.default.fileExists(atPath: imageUrl.path) {
+        do {
+          try UIImagePNGRepresentation(UIImage(named: images)!)?.write(to: imageUrl)
+          print("image added good")
+        } catch {
+          print("image not added")
+        }
+      }
+      imageUrl.append(imagesUrlArray)
+    }
+   
+  }
+  
 }
 
 // MARK: UICollectionViewDataSource
