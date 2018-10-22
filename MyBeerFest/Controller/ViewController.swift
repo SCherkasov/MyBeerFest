@@ -13,10 +13,21 @@ class ViewController: UIViewController {
   @IBOutlet var collectionView: UICollectionView!
   
   var beerModel = BeerModel()
-  var imagesUrlArray = [URL]()
+  
+  // MARK: -
+  // MARK: Actions
+  
+  @IBAction func onStoreTouched(_ sender: Any) {
+    self.saveBeerImages()
+  }
+  
+  // MARK: -
+  // MARK: View Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    self.loadBeerImages()
     
     let nibName = UINib(nibName: "BeerCollectionViewCell", bundle: nil)
     collectionView.register(nibName,
@@ -28,19 +39,29 @@ class ViewController: UIViewController {
   
   // Add logo to ToNavigationBarTitle
   func addLogoToNavigationBarTitle() {
-    let naviController = navigationController
-    let logoImage = #imageLiteral(resourceName: "BeerLogo")
-    let imageView = UIImageView(image: logoImage)
-    let logoWigth = naviController?.navigationBar.frame.size.width
-    let logoHeight = naviController?.navigationBar.frame.size.height
-    let logoX = logoWigth! / 2 - logoImage.size.width / 2
-    let logoY = logoHeight! / 2 - logoImage.size.height / 2
-    
-    imageView.frame = CGRect(x: logoX, y: logoY, width: logoWigth!,
-                             height: logoHeight!)
-    imageView.contentMode = .scaleAspectFit
-    navigationItem.titleView = imageView
-    naviController?.navigationBar.barTintColor = UIColor.black
+    if let navigationController = self.navigationController {
+      navigationController.navigationBar.barTintColor = UIColor.black
+      if let logoImage = UIImage.init(named: "BeerLogo") {
+        let imageView = UIImageView(image: logoImage)
+        let barWidth = navigationController.navigationBar.frame.size.width
+        let barHeight = navigationController.navigationBar.frame.size.height
+        
+        let widthToHeightAspectRatio = logoImage.size.width / logoImage.size.height
+        let tagetLogoSize = CGSize.init(width: barHeight * widthToHeightAspectRatio, height: barHeight)
+        
+        let logoX = barWidth / 2 - tagetLogoSize.width / 2
+        let logoY = barHeight / 2 - tagetLogoSize.height / 2
+        
+        imageView.frame = CGRect(
+          x: logoX,
+          y: logoY,
+          width: tagetLogoSize.width,
+          height: tagetLogoSize.height)
+        
+        imageView.contentMode = .scaleAspectFit
+        navigationController.navigationBar.addSubview(imageView)
+      }
+    }
   }
   
   // make layout to Collection View
@@ -83,26 +104,49 @@ class ViewController: UIViewController {
     self.present(alertController, animated: true, completion: nil)
   }
   
-  func saveBeerImages() {
-    for images in beerModel.beerArray {
-      let document = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-      print(document.absoluteString)
-      let imageUrl = document.appendingPathComponent(images, isDirectory: true)
-      print(imageUrl.path)
-      
-      if !FileManager.default.fileExists(atPath: imageUrl.path) {
-        do {
-          try UIImagePNGRepresentation(UIImage(named: images)!)?.write(to: imageUrl)
-          print("image added good")
-        } catch {
-          print("image not added")
-        }
-      }
-      imageUrl.append(imagesUrlArray)
+  var documentsURL: URL? {
+    get {
+      return try? FileManager.default.url(
+        for: .documentDirectory,
+        in: .userDomainMask,
+        appropriateFor: nil,
+        create: true)
     }
-   
   }
   
+  func saveBeerImages() {
+    for image in beerModel.allBeerImages() {
+      if let folderURL = self.documentsURL {
+        print(folderURL.absoluteString)
+        
+        let fileName =  "\(NSUUID().uuidString).png";
+        
+        let imageURL = folderURL.appendingPathComponent(fileName)
+        
+        if !FileManager.default.fileExists(atPath: imageURL.path) {
+          do {
+            try UIImagePNGRepresentation(image)?.write(to: imageURL)
+            print("image added good")
+          } catch {
+            print("Error during adding image @ path \(imageURL.path)")
+          }
+        }
+      }
+    }
+  }
+  
+  func loadBeerImages() {
+    if let folderURL = self.documentsURL {
+      let fileEnumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: nil)
+      fileEnumerator?.forEach { item in
+        if let fileURL = item as? URL,
+          let image = UIImage.init(contentsOfFile: fileURL.path)
+        {
+          self.beerModel.addBeer(withImage: image)
+        }
+      }
+    }
+  }
 }
 
 // MARK: UICollectionViewDataSource
@@ -110,14 +154,14 @@ extension ViewController: UICollectionViewDataSource {
   
   func collectionView(_ collectionView: UICollectionView,
                       numberOfItemsInSection section: Int) -> Int {
-    return beerModel.beerArray.count
+    return beerModel.beerCount
   }
   
   func collectionView(_ collectionView: UICollectionView,
                       cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BeerCollectionViewCell", for: indexPath) as! BeerCollectionViewCell
     
-    cell.beerImage.image = beerModel.beerArray[indexPath.row]
+    cell.beerImage.image = beerModel.beerImage(at: indexPath.row)
     
     return cell
   }
@@ -154,7 +198,7 @@ UIImagePickerControllerDelegate {
   func imagePickerController(_ picker: UIImagePickerController,
                              didFinishPickingMediaWithInfo info: [String : Any]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      beerModel.beerArray.append(pickedImage)
+      beerModel.addBeer(withImage: pickedImage)
       collectionView.reloadData()
     }
     dismiss(animated: true, completion: nil)
