@@ -13,7 +13,6 @@ class ViewController: UIViewController {
   @IBOutlet var collectionView: UICollectionView!
   
   var beerModel = BeerModel()
-  var imagesUrlArray = [URL]()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -68,12 +67,14 @@ class ViewController: UIViewController {
   // Added alert after shake motion
   func alertAfterShakeMotion() {
     let alertController = UIAlertController(title: "Alert",
-                    message: "Please make you choose:", preferredStyle: .alert)
-    let actionCamera = UIAlertAction(title: "Camera", style: .default) { (action: UIAlertAction) in
+                                            message: "Please make you choose:", preferredStyle: .alert)
+    let actionCamera = UIAlertAction(title: "Camera", style: .default) {
+      (action: UIAlertAction) in
       self.takePhoto()
       print("I was open yout camera")
     }
-    let actionLibrary = UIAlertAction(title: "Library", style: .default) { (action: UIAlertAction) in
+    let actionLibrary = UIAlertAction(title: "Library", style: .default) {
+      (action: UIAlertAction) in
       self.takePhotoLibrary()
       print("I was open your Library")
     }
@@ -83,26 +84,49 @@ class ViewController: UIViewController {
     self.present(alertController, animated: true, completion: nil)
   }
   
-  func saveBeerImages() {
-    for images in beerModel.beerArray {
-      let document = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-      print(document.absoluteString)
-      let imageUrl = document.appendingPathComponent(images, isDirectory: true)
-      print(imageUrl.path)
-      
-      if !FileManager.default.fileExists(atPath: imageUrl.path) {
-        do {
-          try UIImagePNGRepresentation(UIImage(named: images)!)?.write(to: imageUrl)
-          print("image added good")
-        } catch {
-          print("image not added")
-        }
-      }
-      imageUrl.append(imagesUrlArray)
+  //****************************************
+  
+  var documentsURL: URL? {
+    get {
+      return try? FileManager.default.url(for: .documentDirectory,
+                                          in: .userDomainMask,
+                                          appropriateFor: nil,
+                                          create: true)
     }
-   
   }
   
+  func saveBeerImages() {
+    for image in beerModel.allBeerImages() {
+      if let folderURL = self.documentsURL {
+        print(folderURL.absoluteString)
+        
+        let fileName =  "\(NSUUID().uuidString).png";
+        
+        let imageURL = folderURL.appendingPathComponent(fileName)
+        
+        if !FileManager.default.fileExists(atPath: imageURL.path) {
+          do {
+            try UIImagePNGRepresentation(image)?.write(to: imageURL)
+            print("image added good")
+          } catch {
+            print("image not saved")
+          }
+        }
+      }
+    }
+  }
+  
+  func loadBeerImager() {
+    if let folderURL = documentsURL {
+      let fileEnumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: nil)
+      fileEnumerator?.forEach { (item) in
+        if let fileURL = item as? URL,
+          let image = UIImage.init(contentsOfFile: fileURL.path) {
+          self.beerModel.addBeer(withImage: image)
+        }
+      }
+    }
+  }
 }
 
 // MARK: UICollectionViewDataSource
@@ -110,14 +134,14 @@ extension ViewController: UICollectionViewDataSource {
   
   func collectionView(_ collectionView: UICollectionView,
                       numberOfItemsInSection section: Int) -> Int {
-    return beerModel.beerArray.count
+    return beerModel.BeerCount
   }
   
   func collectionView(_ collectionView: UICollectionView,
                       cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BeerCollectionViewCell", for: indexPath) as! BeerCollectionViewCell
     
-    cell.beerImage.image = beerModel.beerArray[indexPath.row]
+    cell.beerImage.image = beerModel.beerImage(at: indexPath.row)
     
     return cell
   }
@@ -154,10 +178,9 @@ UIImagePickerControllerDelegate {
   func imagePickerController(_ picker: UIImagePickerController,
                              didFinishPickingMediaWithInfo info: [String : Any]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      beerModel.beerArray.append(pickedImage)
+      beerModel.addBeer(withImage: pickedImage)
       collectionView.reloadData()
     }
     dismiss(animated: true, completion: nil)
   }
-  
 }
