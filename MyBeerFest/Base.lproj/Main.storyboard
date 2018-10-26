@@ -53,7 +53,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" id="C5L-Pb-9hJ"/>
+                    <navigationItem key="navigationItem" id="C5L-Pb-9hJ">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="Ssm-yU-9t0">
+                            <connections>
+                                <action selector="saveButton:" destination="BYZ-38-t0r" id="eyJ-yU-o7H"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="Rmj-aY-5Rq" id="Oiu-Pv-y5M"/>
                     </connections>

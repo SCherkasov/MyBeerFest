@@ -21,7 +21,17 @@ class BeerModel {
   
   func addBeer(withImage image: UIImage) {
     if let clone = image.copy() as? UIImage {
-      self.beerArray.append(clone)
+      let imageData = UIImagePNGRepresentation(image)
+      
+      let matchedQuantity = self.beerArray.filter { (internalImage) -> Bool in
+        let internalImageData = UIImagePNGRepresentation(internalImage)
+        
+        return internalImageData == imageData
+        }.count
+      
+      if matchedQuantity == 0 {
+        self.beerArray.append(clone)
+      }
     }
   }
   

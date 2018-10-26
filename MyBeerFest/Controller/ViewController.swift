@@ -14,8 +14,15 @@ class ViewController: UIViewController {
   
   var beerModel = BeerModel()
   
+  
+  @IBAction func saveButton(_ sender: Any) {
+    self.saveBeerImages()
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    self.loadBeerImager()
     
     let nibName = UINib(nibName: "BeerCollectionViewCell", bundle: nil)
     collectionView.register(nibName,
