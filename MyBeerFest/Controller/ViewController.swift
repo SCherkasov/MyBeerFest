@@ -22,7 +22,7 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    self.loadBeerImager()
+    self.loadBeerImages()
     
     let nibName = UINib(nibName: "BeerCollectionViewCell", bundle: nil)
     collectionView.register(nibName,
@@ -123,7 +123,7 @@ class ViewController: UIViewController {
     }
   }
   
-  func loadBeerImager() {
+  func loadBeerImages() {
     if let folderURL = documentsURL {
       let fileEnumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: nil)
       fileEnumerator?.forEach { (item) in
