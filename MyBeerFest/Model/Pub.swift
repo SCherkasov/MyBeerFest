@@ -9,9 +9,12 @@
 import Foundation
 import UIKit
 
-class BeerModel {
+class Pub {
   
   private var beerArray = [UIImage]()
+  var beers: [Beer] = []
+  var name: String = "\(NSUUID().uuidString).png"
+  var namesOfImages: [String] = []
   
   var BeerCount: Int {
     get {
@@ -20,8 +23,11 @@ class BeerModel {
   }
   
   func addBeer(withImage image: UIImage) {
-    if let clone = image.copy() as? UIImage {
+    if let clone = image.copy() as? UIImage,
+      let imageName = name.copy() as? String {
+      
       let imageData = UIImagePNGRepresentation(image)
+      let nameData = imageName
       
       let matchedQuantity = self.beerArray.filter { (internalImage) -> Bool in
         let internalImageData = UIImagePNGRepresentation(internalImage)
@@ -29,7 +35,15 @@ class BeerModel {
         return internalImageData == imageData
         }.count
       
-      if matchedQuantity == 0 {
+      let matchedQuantityNames = self.namesOfImages.filter { (intermalImageName)
+        -> Bool in
+        let internalImageNameData = intermalImageName
+        
+        return internalImageNameData == nameData
+        }.count
+      
+      
+      if matchedQuantity == 0 && matchedQuantityNames == 0 {
         self.beerArray.append(clone)
       }
     }
@@ -48,5 +62,15 @@ class BeerModel {
       return nil
     }
     return result
+  }
+}
+
+class Beer {
+  var fileName: String
+  var image: UIImage
+
+  init(fileName: String, image: UIImage) {
+    self.fileName = fileName
+    self.image = image
   }
 }

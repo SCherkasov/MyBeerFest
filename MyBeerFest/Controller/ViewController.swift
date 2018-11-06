@@ -12,8 +12,7 @@ class ViewController: UIViewController {
   
   @IBOutlet var collectionView: UICollectionView!
   
-  var beerModel = BeerModel()
-  
+  var beerModel = Pub()  
   
   @IBAction func saveButton(_ sender: Any) {
     self.saveBeerImages()
@@ -107,7 +106,7 @@ class ViewController: UIViewController {
       if let folderURL = self.documentsURL {
         print(folderURL.absoluteString)
         
-        let fileName =  "\(NSUUID().uuidString).png";
+        let fileName =  "\(NSUUID().uuidString).png"
         
         let imageURL = folderURL.appendingPathComponent(fileName)
         

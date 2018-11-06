@@ -14,7 +14,7 @@
 		8A6D056C216BCAB600975D9B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8A6D056A216BCAB600975D9B /* LaunchScreen.storyboard */; };
 		8A6D0575216BCBB500975D9B /* BeerCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6D0573216BCBB500975D9B /* BeerCollectionViewCell.swift */; };
 		8A6D0576216BCBB500975D9B /* BeerCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A6D0574216BCBB500975D9B /* BeerCollectionViewCell.xib */; };
-		8A6D057A216BCCC600975D9B /* BeerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6D0579216BCCC600975D9B /* BeerModel.swift */; };
+		8A6D057A216BCCC600975D9B /* Pub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6D0579216BCCC600975D9B /* Pub.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 		8A6D056D216BCAB600975D9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A6D0573216BCBB500975D9B /* BeerCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerCollectionViewCell.swift; sourceTree = "<group>"; };
 		8A6D0574216BCBB500975D9B /* BeerCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BeerCollectionViewCell.xib; sourceTree = "<group>"; };
-		8A6D0579216BCCC600975D9B /* BeerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerModel.swift; sourceTree = "<group>"; };
+		8A6D0579216BCCC600975D9B /* Pub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pub.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,7 +92,7 @@
 		8A6D057B216BCCD100975D9B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				8A6D0579216BCCC600975D9B /* BeerModel.swift */,
+				8A6D0579216BCCC600975D9B /* Pub.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -170,7 +170,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A6D0564216BCAB400975D9B /* ViewController.swift in Sources */,
-				8A6D057A216BCCC600975D9B /* BeerModel.swift in Sources */,
+				8A6D057A216BCCC600975D9B /* Pub.swift in Sources */,
 				8A6D0562216BCAB400975D9B /* AppDelegate.swift in Sources */,
 				8A6D0575216BCBB500975D9B /* BeerCollectionViewCell.swift in Sources */,
 			);
