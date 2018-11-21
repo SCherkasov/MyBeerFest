@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Dkg-df-aTh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Dkg-df-aTh">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -67,6 +67,37 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="852" y="134"/>
+        </scene>
+        <!--Image Preview View Controller-->
+        <scene sceneID="Cor-Nj-qTs">
+            <objects>
+                <viewController storyboardIdentifier="ImagePreviewViewController" id="R9m-yV-5dA" customClass="ImagePreviewViewController" customModule="MyBeerFest" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Fh1-LM-rhF">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="X4a-hX-zQ7">
+                                <rect key="frame" x="43" y="197" width="289" height="273"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="273" id="9dg-M7-JPm"/>
+                                    <constraint firstAttribute="width" constant="289" id="WK0-M2-k3b"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="X4a-hX-zQ7" firstAttribute="centerX" secondItem="Fh1-LM-rhF" secondAttribute="centerX" id="f2v-TO-q2x"/>
+                            <constraint firstItem="X4a-hX-zQ7" firstAttribute="centerY" secondItem="Fh1-LM-rhF" secondAttribute="centerY" id="z5X-0I-tQD"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="MIy-Xs-l3o"/>
+                    </view>
+                    <connections>
+                        <outlet property="previewImage" destination="X4a-hX-zQ7" id="6IF-FR-W3t"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BWO-cF-Kdy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1549.5999999999999" y="133.5832083958021"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="O3A-w7-yMM">

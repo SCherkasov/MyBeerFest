@@ -153,6 +153,19 @@ extension ViewController: UICollectionViewDataSource {
   }
 }
 
+//MARK: UICollectionViewDelegate
+extension ViewController: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    
+    let mainSB: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+    let destSB = mainSB.instantiateViewController(withIdentifier: "ImagePreviewViewController") as! ImagePreviewViewController
+    //var data = beerModel.allBeerImages()
+    destSB.image = beerModel.beerImage(at: indexPath.row)!
+    
+    self.navigationController?.pushViewController(destSB, animated: true)
+  }
+}
+
 // MARK: UINavigationControllerDelegate, UIImagePickerControllerDelegate
 extension ViewController: UINavigationControllerDelegate,
 UIImagePickerControllerDelegate {
