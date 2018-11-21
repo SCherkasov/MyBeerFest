@@ -11,14 +11,14 @@ import UIKit
 
 class Pub {
   
-  private var beerArray = [UIImage]()
-  var beers: [Beer] = []
+  private var beers = [Beer]()
+  
   var name: String = "\(NSUUID().uuidString).png"
   var namesOfImages: [String] = []
   
   var BeerCount: Int {
     get {
-      return beerArray.count
+      return beers.count
     }
   }
   
@@ -29,8 +29,8 @@ class Pub {
       let imageData = UIImagePNGRepresentation(image)
       let nameData = imageName
       
-      let matchedQuantity = self.beerArray.filter { (internalImage) -> Bool in
-        let internalImageData = UIImagePNGRepresentation(internalImage)
+      let matchedQuantity = self.beers.filter { (internalImage) -> Bool in
+        let internalImageData = UIImagePNGRepresentation(internalImage.image)
         
         return internalImageData == imageData
         }.count
@@ -44,24 +44,38 @@ class Pub {
       
       
       if matchedQuantity == 0 && matchedQuantityNames == 0 {
-        self.beerArray.append(clone)
+        let imageObject = Beer(fileName: imageName, image: clone)
+        self.beers.append(imageObject)
       }
     }
   }
   
   func beerImage(at index: Int) -> UIImage? {
-    return index < beerArray.count ? self.beerArray[index] : nil
+    if (index >= beers.count) {
+      return nil
+    }
+    let beer = self.beers[index]
+    
+    return beer.image
   }
   
   func allBeerImages() -> [UIImage] {
-    var result: [UIImage]
-    result = self.beerArray.compactMap { (image: UIImage) -> UIImage? in
-      if let clone = image.copy() as? UIImage {
-        return clone
+    var result: [UIImage] = []
+    for beer in beers {
+      if let clone = beer.image.copy() as? UIImage {
+        
+        result.append(clone)
       }
-      return nil
     }
     return result
+//    var result: [UIImage]
+//    result = self.beers.compactMap { (image: UIImage) -> UIImage? in
+//      if let clone = image.copy() as? UIImage {
+//        return clone
+//      }
+//      return nil
+//    }
+//    return result
   }
 }
 

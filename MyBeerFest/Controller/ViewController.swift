@@ -181,10 +181,20 @@ UIImagePickerControllerDelegate {
     }
   }
   
+  // fixed image orientation when load image
+  func fixImageOrientation(_ image: UIImage)->UIImage {
+    UIGraphicsBeginImageContext(image.size)
+    image.draw(at: .zero)
+    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return newImage ?? image
+  }
+  
   func imagePickerController(_ picker: UIImagePickerController,
                              didFinishPickingMediaWithInfo info: [String : Any]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-      beerModel.addBeer(withImage: pickedImage)
+     
+      beerModel.addBeer(withImage: fixImageOrientation(pickedImage))
       collectionView.reloadData()
     }
     dismiss(animated: true, completion: nil)
