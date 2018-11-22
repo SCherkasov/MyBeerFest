@@ -9,12 +9,11 @@
 import UIKit
 
 class BeerCollectionViewCell: UICollectionViewCell {
-
+  
   @IBOutlet var beerImage: UIImageView!
   
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
+  override func awakeFromNib() {
+    super.awakeFromNib()
+    // Initialization code
+  }
 }

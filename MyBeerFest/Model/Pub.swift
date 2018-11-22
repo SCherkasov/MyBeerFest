@@ -68,21 +68,13 @@ class Pub {
       }
     }
     return result
-//    var result: [UIImage]
-//    result = self.beers.compactMap { (image: UIImage) -> UIImage? in
-//      if let clone = image.copy() as? UIImage {
-//        return clone
-//      }
-//      return nil
-//    }
-//    return result
   }
 }
 
 class Beer {
   var fileName: String
   var image: UIImage
-
+  
   init(fileName: String, image: UIImage) {
     self.fileName = fileName
     self.image = image

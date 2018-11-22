@@ -10,23 +10,21 @@ import UIKit
 
 class ImagePreviewViewController: UIViewController {
   
-
   @IBOutlet var previewImage: UIImageView!
   @IBOutlet var scrollView: UIScrollView!
   
   var image = UIImage()
   
-    override func viewDidLoad() {
-        super.viewDidLoad()
-      
-      previewImage.image = image
-      
-      scrollView.minimumZoomScale = 1.0
-      scrollView.maximumZoomScale = 8.0
-      
-      scrollView.delegate = self
-      
-    }
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+    previewImage.image = image
+    
+    scrollView.minimumZoomScale = 1.0
+    scrollView.maximumZoomScale = 8.0
+    
+    scrollView.delegate = self
+  }
 }
 
 // MARK: UIScrollViewDelegate

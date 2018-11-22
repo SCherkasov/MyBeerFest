@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import AudioToolbox
 
 class ViewController: UIViewController {
   
   @IBOutlet var collectionView: UICollectionView!
   
-  var beerModel = Pub()  
+  var beerModel = Pub()
+  var longPressedGestured: UILongPressGestureRecognizer!
   
   @IBAction func saveButton(_ sender: Any) {
     self.saveBeerImages()
@@ -29,6 +31,42 @@ class ViewController: UIViewController {
     
     setupLayoutToCollectionView()
     addLogoToNavigationBarTitle()
+    
+    longPressed()
+  }
+  
+  // Long press function to call actionSheet to delete cell
+  func longPressed() {
+    longPressedGestured = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress(gesture:)))
+    longPressedGestured.minimumPressDuration = 0.6
+    collectionView.addGestureRecognizer(longPressedGestured)
+  }
+  
+  @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
+    switch gesture.state {
+    case .began:
+      guard let selectedIndexPath = collectionView.indexPathForItem(at:
+        gesture.location(in: collectionView)) else { break }
+      collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+      AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+      print("selectedLongPress")
+      
+      let aleretController = UIAlertController(title: "DeleteItem",
+                               message: "Would you like to delete this beer?", preferredStyle: .actionSheet)
+      let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
+        print("ok action")
+      }
+      let cancelAction = UIAlertAction(title: "cancel", style: .cancel) {
+        (action) in
+        print("cancel action")
+      }
+      aleretController.addAction(okAction)
+      aleretController.addAction(cancelAction)
+      self.present(aleretController, animated: true, completion: nil)
+      
+    default:
+      collectionView.cancelInteractiveMovement()
+    }
   }
   
   // Add logo to ToNavigationBarTitle
@@ -144,7 +182,8 @@ extension ViewController: UICollectionViewDataSource {
   }
   
   func collectionView(_ collectionView: UICollectionView,
-                      cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+                      cellForItemAt indexPath: IndexPath) ->
+                                                        UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BeerCollectionViewCell", for: indexPath) as! BeerCollectionViewCell
     
     cell.beerImage.image = beerModel.beerImage(at: indexPath.row)
@@ -155,7 +194,8 @@ extension ViewController: UICollectionViewDataSource {
 
 //MARK: UICollectionViewDelegate
 extension ViewController: UICollectionViewDelegate {
-  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+  func collectionView(_ collectionView: UICollectionView,
+                      didSelectItemAt indexPath: IndexPath) {
     
     let mainSB: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
     let destSB = mainSB.instantiateViewController(withIdentifier: "ImagePreviewViewController") as! ImagePreviewViewController
@@ -206,7 +246,7 @@ UIImagePickerControllerDelegate {
   func imagePickerController(_ picker: UIImagePickerController,
                              didFinishPickingMediaWithInfo info: [String : Any]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-     
+      
       beerModel.addBeer(withImage: fixImageOrientation(pickedImage))
       collectionView.reloadData()
     }
