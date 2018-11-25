@@ -10,10 +10,28 @@ import UIKit
 
 class BeerCollectionViewCell: UICollectionViewCell {
   
+  // MARK: Variables
+  
+  var beer: Beer? {
+    didSet {
+      self.fillCell(with: self.beer)
+    }
+  }
+  
   @IBOutlet var beerImage: UIImageView!
+  
+  // MARK: Private
+  
+  func fillCell(with beer: Beer?) {
+    self.beerImage.image = beer?.image
+  }
+  
+  // MARK: UIView Lifecycle
   
   override func awakeFromNib() {
     super.awakeFromNib()
-    // Initialization code
+    
+    self.fillCell(with: self.beer)
   }
+
 }

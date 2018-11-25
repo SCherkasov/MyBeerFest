@@ -9,21 +9,23 @@
 import UIKit
 import AudioToolbox
 
-class ViewController: UIViewController {
+class MyBeerFestViewController: UIViewController {
   
   @IBOutlet var collectionView: UICollectionView!
   
-  var beerModel = Pub()
-  var longPressedGestured: UILongPressGestureRecognizer!
+  var pub = Pub()
   
-  @IBAction func saveButton(_ sender: Any) {
-    self.saveBeerImages()
-  }
+  var longPressedGestured: UILongPressGestureRecognizer!
+
+  
+  // MARK: View Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    self.loadBeerImages()
+    // Load pub right after view is loaded
+    
+    self.pub.load()
     
     let nibName = UINib(nibName: "BeerCollectionViewCell", bundle: nil)
     collectionView.register(nibName,
@@ -71,19 +73,47 @@ class ViewController: UIViewController {
   
   // Add logo to ToNavigationBarTitle
   func addLogoToNavigationBarTitle() {
-    let naviController = navigationController
-    let logoImage = #imageLiteral(resourceName: "BeerLogo")
-    let imageView = UIImageView(image: logoImage)
-    let logoWigth = naviController?.navigationBar.frame.size.width
-    let logoHeight = naviController?.navigationBar.frame.size.height
-    let logoX = logoWigth! / 2 - logoImage.size.width / 2
-    let logoY = logoHeight! / 2 - logoImage.size.height / 2
     
-    imageView.frame = CGRect(x: logoX, y: logoY, width: logoWigth!,
-                             height: logoHeight!)
+    // Step 1: get navigation bar, if nil then return
+    
+    guard let navigationBar = self.navigationController?.navigationBar
+      else {
+        return
+    }
+    
+    // Step 2: set navigation bar tint color
+    
+    navigationBar.barTintColor = UIColor.black
+  
+    // Step 3: load logo image from bundle, if nil then return
+    
+    guard let logoImage = UIImage.init(named: "BeerLogo")
+      else {
+        return
+    }
+    
+    // Step 4: get loaded image width to height ration, this is required to fill navigation bar bar using its hegiht as invariant
+    
+    let widthToHeightRatio = logoImage.size.width / logoImage.size.height
+    
+    // Step 5: calculate logo view height and width
+    
+    let navigationBarBounds = navigationBar.bounds
+    let barHeight = navigationBarBounds.size.height
+    let logoHeight = barHeight
+    let logoWidth = logoHeight * widthToHeightRatio
+    
+    // Step 6: as per https://stackoverflow.com/questions/28121388/cant-set-titleview-in-the-center-of-navigation-bar-because-back-button I should create interim view, titleView, add imageView to it and only after that add titleView as a navigationItem.titleView
+    
+    let imageView = UIImageView(image: logoImage)
+    let titleView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: logoWidth, height: logoHeight))
+    
+    imageView.frame = titleView.bounds;
     imageView.contentMode = .scaleAspectFit
-    navigationItem.titleView = imageView
-    naviController?.navigationBar.barTintColor = UIColor.black
+    
+    titleView.addSubview(imageView)
+    
+    self.navigationItem.titleView = titleView;
   }
   
   // make layout to Collection View
@@ -103,24 +133,27 @@ class ViewController: UIViewController {
   // Motion effect to show alert
   override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
     if motion == .motionShake {
-      alertAfterShakeMotion()
-      print("motion was greate")
+      self.presentAddBeerAlert()
     }
   }
   
+  @IBAction func addBeerBarButtonTouched(_ sender: Any) {
+    self.presentAddBeerAlert()
+  }
+  
   // Added alert after shake motion
-  func alertAfterShakeMotion() {
+  func presentAddBeerAlert() {
     let alertController = UIAlertController(title: "Alert",
                                             message: "Please make you choose:", preferredStyle: .alert)
     let actionCamera = UIAlertAction(title: "Camera", style: .default) {
       (action: UIAlertAction) in
       self.takePhoto()
-      print("I was open yout camera")
+      print("Дверь мне запили")
     }
     let actionLibrary = UIAlertAction(title: "Library", style: .default) {
       (action: UIAlertAction) in
       self.takePhotoLibrary()
-      print("I was open your Library")
+      print("Я твой дом труба шатал")
     }
     
     alertController.addAction(actionCamera)
@@ -128,57 +161,14 @@ class ViewController: UIViewController {
     self.present(alertController, animated: true, completion: nil)
   }
   
-  //****************************************
-  
-  var documentsURL: URL? {
-    get {
-      return try? FileManager.default.url(for: .documentDirectory,
-                                          in: .userDomainMask,
-                                          appropriateFor: nil,
-                                          create: true)
-    }
-  }
-  
-  func saveBeerImages() {
-    for image in beerModel.allBeerImages() {
-      if let folderURL = self.documentsURL {
-        print(folderURL.absoluteString)
-        
-        let fileName =  "\(NSUUID().uuidString).png"
-        
-        let imageURL = folderURL.appendingPathComponent(fileName)
-        
-        if !FileManager.default.fileExists(atPath: imageURL.path) {
-          do {
-            try UIImagePNGRepresentation(image)?.write(to: imageURL)
-            print("image added good")
-          } catch {
-            print("image not saved")
-          }
-        }
-      }
-    }
-  }
-  
-  func loadBeerImages() {
-    if let folderURL = documentsURL {
-      let fileEnumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: nil)
-      fileEnumerator?.forEach { (item) in
-        if let fileURL = item as? URL,
-          let image = UIImage.init(contentsOfFile: fileURL.path) {
-          self.beerModel.addBeer(withImage: image)
-        }
-      }
-    }
-  }
 }
 
 // MARK: UICollectionViewDataSource
-extension ViewController: UICollectionViewDataSource {
+extension MyBeerFestViewController: UICollectionViewDataSource {
   
   func collectionView(_ collectionView: UICollectionView,
                       numberOfItemsInSection section: Int) -> Int {
-    return beerModel.BeerCount
+    return self.pub.beerCount
   }
   
   func collectionView(_ collectionView: UICollectionView,
@@ -186,28 +176,27 @@ extension ViewController: UICollectionViewDataSource {
                                                         UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BeerCollectionViewCell", for: indexPath) as! BeerCollectionViewCell
     
-    cell.beerImage.image = beerModel.beerImage(at: indexPath.row)
+    cell.beer = pub.beer(at: indexPath.row)
     
     return cell
   }
 }
 
 //MARK: UICollectionViewDelegate
-extension ViewController: UICollectionViewDelegate {
+extension MyBeerFestViewController: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView,
                       didSelectItemAt indexPath: IndexPath) {
     
     let mainSB: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
     let destSB = mainSB.instantiateViewController(withIdentifier: "ImagePreviewViewController") as! ImagePreviewViewController
-    //var data = beerModel.allBeerImages()
-    destSB.image = beerModel.beerImage(at: indexPath.row)!
+    destSB.beer = pub.beer(at: indexPath.row)
     
     self.navigationController?.pushViewController(destSB, animated: true)
   }
 }
 
 // MARK: UINavigationControllerDelegate, UIImagePickerControllerDelegate
-extension ViewController: UINavigationControllerDelegate,
+extension MyBeerFestViewController: UINavigationControllerDelegate,
 UIImagePickerControllerDelegate {
   
   func takePhoto() {
@@ -240,6 +229,7 @@ UIImagePickerControllerDelegate {
     image.draw(at: .zero)
     let newImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
+    
     return newImage ?? image
   }
   
@@ -247,9 +237,15 @@ UIImagePickerControllerDelegate {
                              didFinishPickingMediaWithInfo info: [String : Any]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
       
-      beerModel.addBeer(withImage: fixImageOrientation(pickedImage))
-      collectionView.reloadData()
+      self.pub.addBeer(with: fixImageOrientation(pickedImage))
+      
+      // Save pub each time the new beer is added
+      
+      self.pub.save()
+      
+      self.collectionView.reloadData()
     }
+    
     dismiss(animated: true, completion: nil)
   }
 }
