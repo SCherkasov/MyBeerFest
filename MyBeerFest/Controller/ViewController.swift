@@ -176,7 +176,7 @@ extension ViewController: UICollectionViewDelegate {
       longPressedGestured.minimumPressDuration = 0.6
       collectionView.addGestureRecognizer(longPressedGestured)
     }
-    
+
     @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
       switch gesture.state {
       case .began:
@@ -185,7 +185,7 @@ extension ViewController: UICollectionViewDelegate {
         collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
         AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
         print("selectedLongPress")
-        
+
         let aleretController = UIAlertController(title: "DeleteItem",
                                                  message: "Would you like to delete this beer?", preferredStyle: .actionSheet)
         let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
@@ -199,7 +199,7 @@ extension ViewController: UICollectionViewDelegate {
         aleretController.addAction(okAction)
         aleretController.addAction(cancelAction)
         self.present(aleretController, animated: true, completion: nil)
-        
+
       default:
         collectionView.cancelInteractiveMovement()
       }
