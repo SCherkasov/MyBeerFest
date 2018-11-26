@@ -50,10 +50,19 @@ class Pub {
     }
   }
   
+  func removeBeer(at index: Int) {
+    if (index >= beers.count) {
+      return
+    }
+    
+    self.beers.remove(at: index)
+  }
+  
   func beerImage(at index: Int) -> UIImage? {
     if (index >= beers.count) {
       return nil
     }
+    
     let beer = self.beers[index]
     
     return beer.image

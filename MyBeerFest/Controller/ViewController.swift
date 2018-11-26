@@ -32,7 +32,9 @@ class ViewController: UIViewController {
     setupLayoutToCollectionView()
     addLogoToNavigationBarTitle()
     
-    longPressed()
+  
+    
+    self.setupLongPressedGestureRecognizer()
   }
   
   
@@ -171,40 +173,49 @@ extension ViewController: UICollectionViewDelegate {
     destSB.image = beerModel.beerImage(at: indexPath.row)!
     
     self.navigationController?.pushViewController(destSB, animated: true)
-    
-    // Long press function to call actionSheet to delete cell
-    func longPressed() {
-      longPressedGestured = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
-      longPressedGestured.minimumPressDuration = 0.6
-      collectionView.addGestureRecognizer(longPressedGestured)
-    }
-    
-    @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
-      switch gesture.state {
-      case .began:
-        guard let selectedIndexPath = collectionView.indexPathForItem(at:
-          gesture.location(in: collectionView)) else { break }
-        collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
-        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-        print("selectedLongPress")
+  }
+  
+  // Long press function to call actionSheet to delete cell
+  func setupLongPressedGestureRecognizer() {
+    longPressedGestured = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
+    longPressedGestured.minimumPressDuration = 0.6
+    collectionView.addGestureRecognizer(longPressedGestured)
+  }
+  
+  @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
+
+    switch gesture.state {
+    case .began:
+      
+      guard let selectedIndexPath = collectionView.indexPathForItem(at:
+        gesture.location(in: collectionView)) else { break }
+      collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+      AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+      print("selectedLongPress")
+      
+      let aleretController = UIAlertController(title: "DeleteItem",
+                                               message: "Would you like to delete this beer?", preferredStyle: .actionSheet)
+      
+
+      
+      
+      let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
+        print("ok action")
+
+        self.beerModel.removeBeer(at: selectedIndexPath.row)
         
-        let aleretController = UIAlertController(title: "DeleteItem",
-                                                 message: "Would you like to delete this beer?", preferredStyle: .actionSheet)
-        let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
-          print("ok action")
-          collectionView.deleteItems(at: [indexPath])
-        }
-        let cancelAction = UIAlertAction(title: "cancel", style: .cancel) {
-          (action) in
-          print("cancel action")
-        }
-        aleretController.addAction(okAction)
-        aleretController.addAction(cancelAction)
-        self.present(aleretController, animated: true, completion: nil)
-        
-      default:
-        collectionView.cancelInteractiveMovement()
+        self.collectionView.deleteItems(at: [selectedIndexPath])
       }
+      let cancelAction = UIAlertAction(title: "cancel", style: .cancel) {
+        (action) in
+        print("cancel action")
+      }
+      aleretController.addAction(okAction)
+      aleretController.addAction(cancelAction)
+      self.present(aleretController, animated: true, completion: nil)
+      
+    default:
+      collectionView.cancelInteractiveMovement()
     }
   }
 }
