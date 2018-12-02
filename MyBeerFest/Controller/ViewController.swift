@@ -13,17 +13,13 @@ class ViewController: UIViewController {
   
   @IBOutlet var collectionView: UICollectionView!
   
-  var beerModel = Pub()
+  var pub = Pub()
   var longPressedGestured: UILongPressGestureRecognizer!
-  
-  @IBAction func saveButton(_ sender: Any) {
-    self.saveBeerImages()
-  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    self.loadBeerImages()
+    self.pub.load()
     
     let nibName = UINib(nibName: "BeerCollectionViewCell", bundle: nil)
     collectionView.register(nibName,
@@ -35,7 +31,42 @@ class ViewController: UIViewController {
     longPressed()
   }
   
+  // Long press function to call actionSheet to delete cell
+  func longPressed() {
+    longPressedGestured = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
+    longPressedGestured.minimumPressDuration = 0.6
+    collectionView.addGestureRecognizer(longPressedGestured)
+  }
   
+  @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
+    switch gesture.state {
+    case .began:
+      guard let selectedIndexPath = collectionView.indexPathForItem(at:
+        gesture.location(in: collectionView)) else { break }
+      collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+      AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+      print("selectedLongPress")
+      
+      let aleretController = UIAlertController(title: "DeleteItem",
+                                               message: "Would you like to delete this beer?", preferredStyle: .actionSheet)
+      let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
+        print("ok action")
+        self.pub.removeBeer(at: selectedIndexPath.row)
+        self.pub.delete()
+        self.collectionView.deleteItems(at: [selectedIndexPath])
+      }
+      let cancelAction = UIAlertAction(title: "cancel", style: .cancel) {
+        (action) in
+        print("cancel action")
+      }
+      aleretController.addAction(okAction)
+      aleretController.addAction(cancelAction)
+      self.present(aleretController, animated: true, completion: nil)
+      
+    default:
+      collectionView.cancelInteractiveMovement()
+    }
+  }
   
   // Add logo to ToNavigationBarTitle
   func addLogoToNavigationBarTitle() {
@@ -76,6 +107,10 @@ class ViewController: UIViewController {
     }
   }
   
+  @IBAction func addBeerBarButton(_ sender: Any) {
+    self.alertAfterShakeMotion()
+  }
+
   // Added alert after shake motion
   func alertAfterShakeMotion() {
     let alertController = UIAlertController(title: "Alert",
@@ -95,50 +130,6 @@ class ViewController: UIViewController {
     alertController.addAction(actionLibrary)
     self.present(alertController, animated: true, completion: nil)
   }
-  
-  //****************************************
-  
-  var documentsURL: URL? {
-    get {
-      return try? FileManager.default.url(for: .documentDirectory,
-                                          in: .userDomainMask,
-                                          appropriateFor: nil,
-                                          create: true)
-    }
-  }
-  
-  func saveBeerImages() {
-    for image in beerModel.allBeerImages() {
-      if let folderURL = self.documentsURL {
-        print(folderURL.absoluteString)
-        
-        let fileName =  "\(NSUUID().uuidString).png"
-        
-        let imageURL = folderURL.appendingPathComponent(fileName)
-        
-        if !FileManager.default.fileExists(atPath: imageURL.path) {
-          do {
-            try UIImagePNGRepresentation(image)?.write(to: imageURL)
-            print("image added good")
-          } catch {
-            print("image not saved")
-          }
-        }
-      }
-    }
-  }
-  
-  func loadBeerImages() {
-    if let folderURL = documentsURL {
-      let fileEnumerator = FileManager.default.enumerator(at: folderURL, includingPropertiesForKeys: nil)
-      fileEnumerator?.forEach { (item) in
-        if let fileURL = item as? URL,
-          let image = UIImage.init(contentsOfFile: fileURL.path) {
-          self.beerModel.addBeer(withImage: image)
-        }
-      }
-    }
-  }
 }
 
 // MARK: UICollectionViewDataSource
@@ -146,7 +137,7 @@ extension ViewController: UICollectionViewDataSource {
   
   func collectionView(_ collectionView: UICollectionView,
                       numberOfItemsInSection section: Int) -> Int {
-    return beerModel.BeerCount
+    return pub.BeerCount
   }
   
   func collectionView(_ collectionView: UICollectionView,
@@ -154,7 +145,7 @@ extension ViewController: UICollectionViewDataSource {
                                                         UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BeerCollectionViewCell", for: indexPath) as! BeerCollectionViewCell
     
-    cell.beerImage.image = beerModel.beerImage(at: indexPath.row)
+    cell.beer = pub.beer(at: indexPath.row)
     
     return cell
   }
@@ -168,46 +159,11 @@ extension ViewController: UICollectionViewDelegate {
     let mainSB: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
     let destSB = mainSB.instantiateViewController(withIdentifier: "ImagePreviewViewController") as! ImagePreviewViewController
     //var data = beerModel.allBeerImages()
-    destSB.image = beerModel.beerImage(at: indexPath.row)!
+    destSB.beer = pub.beer(at: indexPath.row)
     
     self.navigationController?.pushViewController(destSB, animated: true)
-    
-    // Long press function to call actionSheet to delete cell
-    func longPressed() {
-      longPressedGestured = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
-      longPressedGestured.minimumPressDuration = 0.6
-      collectionView.addGestureRecognizer(longPressedGestured)
-    }
-    
-    @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
-      switch gesture.state {
-      case .began:
-        guard let selectedIndexPath = collectionView.indexPathForItem(at:
-          gesture.location(in: collectionView)) else { break }
-        collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
-        AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-        print("selectedLongPress")
-        
-        let aleretController = UIAlertController(title: "DeleteItem",
-                                                 message: "Would you like to delete this beer?", preferredStyle: .actionSheet)
-        let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
-          print("ok action")
-          collectionView.deleteItems(at: [indexPath])
-        }
-        let cancelAction = UIAlertAction(title: "cancel", style: .cancel) {
-          (action) in
-          print("cancel action")
-        }
-        aleretController.addAction(okAction)
-        aleretController.addAction(cancelAction)
-        self.present(aleretController, animated: true, completion: nil)
-        
-      default:
-        collectionView.cancelInteractiveMovement()
-      }
-    }
   }
-}
+  }
 
 // MARK: UINavigationControllerDelegate, UIImagePickerControllerDelegate
 extension ViewController: UINavigationControllerDelegate,
@@ -250,9 +206,11 @@ UIImagePickerControllerDelegate {
                              didFinishPickingMediaWithInfo info: [String : Any]) {
     if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
       
-      beerModel.addBeer(withImage: fixImageOrientation(pickedImage))
-      collectionView.reloadData()
+      self.pub.addBeer(with: fixImageOrientation(pickedImage))
+      self.pub.save()
+      self.collectionView.reloadData()
     }
+    
     dismiss(animated: true, completion: nil)
   }
 }

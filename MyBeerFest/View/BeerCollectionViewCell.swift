@@ -12,8 +12,18 @@ class BeerCollectionViewCell: UICollectionViewCell {
   
   @IBOutlet var beerImage: UIImageView!
   
+  var beer: Beer? {
+    didSet {
+      self.fillCell(with: beer)
+    }
+  }
+  
+  func fillCell(with beer: Beer?) {
+    self.beerImage.image = beer?.image
+  }
+  
   override func awakeFromNib() {
     super.awakeFromNib()
-    // Initialization code
+    self.fillCell(with: self.beer)
   }
 }

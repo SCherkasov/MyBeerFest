@@ -13,12 +13,14 @@ class ImagePreviewViewController: UIViewController {
   @IBOutlet var previewImage: UIImageView!
   @IBOutlet var scrollView: UIScrollView!
   
+  var beer: Beer?
+  
   var image = UIImage()
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    previewImage.image = image
+    previewImage.image = beer?.image
     
     scrollView.minimumZoomScale = 1.0
     scrollView.maximumZoomScale = 8.0

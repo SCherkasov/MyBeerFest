@@ -13,70 +13,122 @@ class Pub {
   
   private var beers = [Beer]()
   
-  var name: String = "\(NSUUID().uuidString).png"
-  var namesOfImages: [String] = []
-  
   var BeerCount: Int {
     get {
       return beers.count
     }
   }
   
-  func addBeer(withImage image: UIImage) {
-    if let clone = image.copy() as? UIImage,
-      let imageName = name.copy() as? String {
-      
-      let imageData = UIImagePNGRepresentation(image)
-      let nameData = imageName
-      
-      let matchedQuantity = self.beers.filter { (internalImage) -> Bool in
-        let internalImageData = UIImagePNGRepresentation(internalImage.image)
-        
-        return internalImageData == imageData
-        }.count
-      
-      let matchedQuantityNames = self.namesOfImages.filter { (intermalImageName)
-        -> Bool in
-        let internalImageNameData = intermalImageName
-        
-        return internalImageNameData == nameData
-        }.count
-      
-      
-      if matchedQuantity == 0 && matchedQuantityNames == 0 {
-        let imageObject = Beer(fileName: imageName, image: clone)
-        self.beers.append(imageObject)
-      }
+  var dataPath: URL? {
+    get {
+      return try? FileManager.default.url(for: .documentDirectory,
+                                          in: .userDomainMask,
+                                          appropriateFor: nil,
+                                          create: true)
     }
   }
   
-  func beerImage(at index: Int) -> UIImage? {
-    if (index >= beers.count) {
+  var beerImages: [UIImage] {
+    get {
+      var result: [UIImage] = []
+      
+      for beer in beers {
+        if let clone = beer.image.copy() as? UIImage {
+          result.append(clone)
+        }
+      }
+      
+      return result
+    }
+  }
+  
+  func beer(at index: Int) -> Beer? {
+    if (index >= BeerCount) {
       return nil
     }
-    let beer = self.beers[index]
     
-    return beer.image
+    return self.beers[index]
   }
   
-  func allBeerImages() -> [UIImage] {
-    var result: [UIImage] = []
-    for beer in beers {
-      if let clone = beer.image.copy() as? UIImage {
-        
-        result.append(clone)
+  func addBeer(_ beer: Beer) {
+    self.beers.append(beer)
+  }
+  
+  func addBeer(with image: UIImage) {
+    var isBeerWithImageExist = false
+    let imagePNGRepresentation = UIImagePNGRepresentation(image)
+    for beerImage in self.beerImages {
+      let beerImagePNGRepresentation = UIImagePNGRepresentation(beerImage)
+      if imagePNGRepresentation == beerImagePNGRepresentation {
+        isBeerWithImageExist = true
+        break
       }
     }
-    return result
+    if isBeerWithImageExist {
+      return
+    }
+    var beer: Beer?
+    if let imageClone = image.copy() as? UIImage {
+      beer = Beer(fileName: NSUUID().uuidString, image: imageClone)
+    }
+    if let unwrappedBeer = beer {
+      self.addBeer(unwrappedBeer)
+    }
   }
-}
-
-class Beer {
-  var fileName: String
-  var image: UIImage
   
-  init(fileName: String, image: UIImage) {
-    self.fileName = fileName
-    self.image = image
+  func removeBeer(at index: Int) {
+    if (index >= BeerCount) {
+      return
+    }
+    self.beers.remove(at: index)
   }
+  
+  func save() {
+    guard let path = self.dataPath else { return }
+    
+    for beer in self.beers {
+      let imageURL = path.appendingPathComponent(beer.fileName)
+      if !FileManager.default.fileExists(atPath: imageURL.path) {
+        do {
+          try UIImagePNGRepresentation(beer.image)?.write(to: imageURL)
+        } catch {
+          print("error, image not saved")
+        }
+      }
+    }
+  }
+  
+  func load() {
+    guard let path = self.dataPath else { return }
+    
+    let fileEnumerator = FileManager.default.enumerator(at: path,
+                                              includingPropertiesForKeys: nil)
+    fileEnumerator?.forEach { (item) in
+      if let fileURL = item as? URL {
+        let fileName = fileURL.lastPathComponent
+        
+        let path = fileURL.path
+        guard let image = UIImage.init(contentsOfFile: path) else { return }
+        
+        let beer = Beer.init(fileName: fileName, image: image)
+        self.addBeer(beer)
+      }
+    }
+  }
+  
+  func delete() {
+    guard let path = self.dataPath else { return }
+    
+    for beer in self.beers {
+      let imageURL = path.appendingPathComponent(beer.fileName)
+      if FileManager.default.fileExists(atPath: imageURL.path) {
+        do {
+          try UIImagePNGRepresentation(beer.image).remove(at: imageURL)
+        } catch {
+          print("we can't to delete")
+        }
+      }
+    }
+  }
+  
 }
