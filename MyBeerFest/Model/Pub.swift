@@ -123,7 +123,12 @@ class Pub {
       let imageURL = path.appendingPathComponent(beer.fileName)
       if FileManager.default.fileExists(atPath: imageURL.path) {
         do {
-          try UIImagePNGRepresentation(beer.image).remove(at: imageURL)
+          try
+            //UIImagePNGRepresentation(beer.image).remove(at: imageURL) as String
+            
+            FileManager.default.removeItem(at: imageURL)
+           
+          print("image was deleted")
         } catch {
           print("we can't to delete")
         }

@@ -51,8 +51,8 @@ class ViewController: UIViewController {
                                                message: "Would you like to delete this beer?", preferredStyle: .actionSheet)
       let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
         print("ok action")
-        self.pub.removeBeer(at: selectedIndexPath.row)
         self.pub.delete()
+        self.pub.removeBeer(at: selectedIndexPath.row)
         self.collectionView.deleteItems(at: [selectedIndexPath])
       }
       let cancelAction = UIAlertAction(title: "cancel", style: .cancel) {
