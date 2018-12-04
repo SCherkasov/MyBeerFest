@@ -17,6 +17,8 @@
 		8A6D0576216BCBB500975D9B /* BeerCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8A6D0574216BCBB500975D9B /* BeerCollectionViewCell.xib */; };
 		8A6D057A216BCCC600975D9B /* Pub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6D0579216BCCC600975D9B /* Pub.swift */; };
 		8A87D5A421B07FB30085C104 /* Beer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87D5A321B07FB30085C104 /* Beer.swift */; };
+		DFFBEF4221B742460008F080 /* QUESTIONS.md in Resources */ = {isa = PBXBuildFile; fileRef = DFFBEF4121B742460008F080 /* QUESTIONS.md */; };
+		DFFBEF4521B7434A0008F080 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DFFBEF4021B73BD10008F080 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		8A6D0574216BCBB500975D9B /* BeerCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BeerCollectionViewCell.xib; sourceTree = "<group>"; };
 		8A6D0579216BCCC600975D9B /* Pub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pub.swift; sourceTree = "<group>"; };
 		8A87D5A321B07FB30085C104 /* Beer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beer.swift; sourceTree = "<group>"; };
+		DFFBEF4021B73BD10008F080 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		DFFBEF4121B742460008F080 /* QUESTIONS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = QUESTIONS.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +52,8 @@
 		8A6D0555216BCAB400975D9B = {
 			isa = PBXGroup;
 			children = (
+				DFFBEF4121B742460008F080 /* QUESTIONS.md */,
+				DFFBEF4021B73BD10008F080 /* README.md */,
 				8A6D0560216BCAB400975D9B /* MyBeerFest */,
 				8A6D055F216BCAB400975D9B /* Products */,
 			);
@@ -164,6 +170,8 @@
 				8A6D0576216BCBB500975D9B /* BeerCollectionViewCell.xib in Resources */,
 				8A6D056C216BCAB600975D9B /* LaunchScreen.storyboard in Resources */,
 				8A6D0569216BCAB600975D9B /* Assets.xcassets in Resources */,
+				DFFBEF4521B7434A0008F080 /* README.md in Resources */,
+				DFFBEF4221B742460008F080 /* QUESTIONS.md in Resources */,
 				8A6D0567216BCAB400975D9B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
