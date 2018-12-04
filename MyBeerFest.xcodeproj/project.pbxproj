@@ -19,6 +19,7 @@
 		8A87D5A421B07FB30085C104 /* Beer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87D5A321B07FB30085C104 /* Beer.swift */; };
 		DFFBEF4221B742460008F080 /* QUESTIONS.md in Resources */ = {isa = PBXBuildFile; fileRef = DFFBEF4121B742460008F080 /* QUESTIONS.md */; };
 		DFFBEF4521B7434A0008F080 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DFFBEF4021B73BD10008F080 /* README.md */; };
+		8A87D5A621B727D90085C104 /* openBeerSound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 8A87D5A521B727D90085C104 /* openBeerSound.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		8A87D5A321B07FB30085C104 /* Beer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Beer.swift; sourceTree = "<group>"; };
 		DFFBEF4021B73BD10008F080 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		DFFBEF4121B742460008F080 /* QUESTIONS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = QUESTIONS.md; sourceTree = "<group>"; };
+		8A87D5A521B727D90085C104 /* openBeerSound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = openBeerSound.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 				8A6D0565216BCAB400975D9B /* Main.storyboard */,
 				8A6D056A216BCAB600975D9B /* LaunchScreen.storyboard */,
 				8A6D056D216BCAB600975D9B /* Info.plist */,
+				8A87D5A521B727D90085C104 /* openBeerSound.wav */,
 			);
 			path = MyBeerFest;
 			sourceTree = "<group>";
@@ -167,6 +170,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A87D5A621B727D90085C104 /* openBeerSound.wav in Resources */,
 				8A6D0576216BCBB500975D9B /* BeerCollectionViewCell.xib in Resources */,
 				8A6D056C216BCAB600975D9B /* LaunchScreen.storyboard in Resources */,
 				8A6D0569216BCAB600975D9B /* Assets.xcassets in Resources */,
