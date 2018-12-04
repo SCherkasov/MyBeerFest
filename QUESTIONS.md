@@ -21,7 +21,15 @@ let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
     
     // Step 3
     // Remove just one cell from UICollectionView. After that your UI will not reflect the situation you have with a disk
-    // UI shows you all beers exlcuding the beer you selected and removed on Step 2, but here you are removing just one cell
+    // UI shows you all beers exlcuding the beer you selected and removed on Step 2.
+    // You done:
+    // * removed just a one Beer from the pub model
+    // * removed just a one UICollectionViewCell on the UI
+    // * removed all beer images on FS
+    // You expect:
+    // * that all beer Cells and Beer models are cleared out and dropped. It won't happen as you has not done it in code.
+    // Logically, when you reload an app you wont see any photos as they all are removed from the disk, and your
+    // model load all files into itsel upon app launch
     self.collectionView.deleteItems(at: [selectedIndexPath])
 }
 ```
