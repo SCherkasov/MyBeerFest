@@ -72,19 +72,28 @@ class ViewController: UIViewController {
   
   // Add logo to ToNavigationBarTitle
   func addLogoToNavigationBarTitle() {
-    let naviController = navigationController
-    let logoImage = #imageLiteral(resourceName: "BeerLogo")
-    let imageView = UIImageView(image: logoImage)
-    let logoWigth = naviController?.navigationBar.frame.size.width
-    let logoHeight = naviController?.navigationBar.frame.size.height
-    let logoX = logoWigth! / 2 - logoImage.size.width / 2
-    let logoY = logoHeight! / 2 - logoImage.size.height / 2
+    guard let navigationBar = self.navigationController?.navigationBar
+      else { return }
     
-    imageView.frame = CGRect(x: logoX, y: logoY, width: logoWigth!,
-                             height: logoHeight!)
+    navigationBar.barTintColor = UIColor.black
+    
+    guard let logoImage = UIImage.init(named: "BeerLogo") else { return }
+    
+    let widthToHeightRatio = logoImage.size.width / logoImage.size.height
+    let navigationBarBounds = navigationBar.bounds
+    let barHeight = navigationBarBounds.size.height
+    let logoHeight = barHeight
+    let logoWidth = logoHeight * widthToHeightRatio
+    
+    let imageView = UIImageView(image: logoImage)
+    let titleView = UIView.init(frame: CGRect(x: 0, y: 0, width: logoWidth, height: logoHeight))
+    
+    imageView.frame = titleView.bounds
     imageView.contentMode = .scaleAspectFit
-    navigationItem.titleView = imageView
-    naviController?.navigationBar.barTintColor = UIColor.black
+    
+    titleView.addSubview(imageView)
+    
+    self.navigationItem.titleView = titleView
   }
   
   // make layout to Collection View
