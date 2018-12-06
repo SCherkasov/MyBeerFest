@@ -53,6 +53,7 @@ class ViewController: UIViewController {
                                                message: "Would you like to delete this beer?", preferredStyle: .actionSheet)
       let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
         print("ok action")
+        self.playOpenOrDeleteBeerSound(soundName: "deleteBeerSound")
         self.pub.delete()
         self.pub.removeBeer(at: selectedIndexPath.row)
         self.collectionView.deleteItems(at: [selectedIndexPath])
@@ -117,17 +118,18 @@ class ViewController: UIViewController {
   override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) {
     if motion == .motionShake {
       alertAfterShakeMotion()
+      self.playOpenOrDeleteBeerSound(soundName: "openBeerSound")
       print("motion was greate")
     }
   }
   
   @IBAction func addBeerBarButton(_ sender: Any) {
-    self.playOpenBeerSound(soundName: "openBeerSound")
+    self.playOpenOrDeleteBeerSound(soundName: "openBeerSound")
     self.alertAfterShakeMotion()
   }
   
   // Sound effect
-  func playOpenBeerSound(soundName: String) {
+  func playOpenOrDeleteBeerSound(soundName: String) {
     guard let url = Bundle.main.url(forResource: soundName,
                                     withExtension: "wav") else { return }
     do {
