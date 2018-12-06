@@ -49,7 +49,7 @@ class ViewController: UIViewController {
       AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
       print("selectedLongPress")
       
-      let aleretController = UIAlertController(title: "DeleteItem",
+      let aleretController = UIAlertController(title: "Delete..?",
                                                message: "Would you like to delete this beer?", preferredStyle: .actionSheet)
       let okAction = UIAlertAction(title: "ok", style: .default) { (action) in
         print("ok action")
@@ -57,10 +57,13 @@ class ViewController: UIViewController {
         self.pub.removeBeer(at: selectedIndexPath.row)
         self.collectionView.deleteItems(at: [selectedIndexPath])
       }
-      let cancelAction = UIAlertAction(title: "cancel", style: .cancel) {
+      let cancelAction = UIAlertAction(title: "cancel", style: .default) {
         (action) in
         print("cancel action")
       }
+      
+      aleretController.view.tintColor = UIColor.darkGray
+      
       aleretController.addAction(okAction)
       aleretController.addAction(cancelAction)
       self.present(aleretController, animated: true, completion: nil)
@@ -154,7 +157,9 @@ class ViewController: UIViewController {
       self.takePhotoLibrary()
       print("I was open your Library")
     }
-    
+
+    alertController.view.tintColor = UIColor.black
+
     alertController.addAction(actionCamera)
     alertController.addAction(actionLibrary)
     self.present(alertController, animated: true, completion: nil)
@@ -175,7 +180,7 @@ extension ViewController: UICollectionViewDataSource {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "BeerCollectionViewCell", for: indexPath) as! BeerCollectionViewCell
     
     cell.beer = pub.beer(at: indexPath.row)
-    
+   
     return cell
   }
 }
