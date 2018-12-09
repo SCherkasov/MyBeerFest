@@ -33,6 +33,10 @@ class ViewController: UIViewController {
     longPressed()
   }
   
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+    return .lightContent
+  }
+  
   // Long press function to call actionSheet to delete cell
   func longPressed() {
     longPressedGestured = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
@@ -80,6 +84,7 @@ class ViewController: UIViewController {
       else { return }
     
     navigationBar.barTintColor = UIColor.black
+    navigationBar.isTranslucent = false
     
     guard let logoImage = UIImage.init(named: "BeerLogo") else { return }
     
@@ -249,4 +254,9 @@ UIImagePickerControllerDelegate {
     
     dismiss(animated: true, completion: nil)
   }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    navigationController?.navigationBar.barStyle = .black
+  }
+  
 }
